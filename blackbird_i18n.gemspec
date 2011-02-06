@@ -1,5 +1,6 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path("../lib/blackbird_i18n/version", __FILE__)
+$:.unshift File.expand_path("../lib", __FILE__)
+require "blackbird_i18n/version"
 
 Gem::Specification.new do |s|
   s.name        = "blackbird_i18n"
@@ -20,5 +21,5 @@ Gem::Specification.new do |s|
   s.executables  = `git ls-files`.split("\n").map{|f| f =~ /^bin\/(.*)/ ? $1 : nil}.compact
   s.require_path = 'lib'
 
-  s.add_runtime_dependency 'blackbird', '~> 1.0'
+  s.add_runtime_dependency 'blackbird'
 end

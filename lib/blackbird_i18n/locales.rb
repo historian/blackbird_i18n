@@ -29,6 +29,15 @@ class Blackbird::I18n::Locales
     @locales << locale.to_s unless locale.nil?
   end
 
+  def concat(locales)
+    locales.each { |l| self << l }
+    self
+  end
+
+  def size
+    @locales.size
+  end
+
   def delete(locale)
     locale = locale.to_s
     @map.delete(locale)

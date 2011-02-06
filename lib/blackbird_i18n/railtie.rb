@@ -1,6 +1,6 @@
 class Blackbird::I18n::Railtie < Rails::Engine
 
-  config.blackbird.processors.unshift Blackbird::I18n::Processor
+  config.blackbird.processors.use 'Blackbird::I18n::Processor'
 
   config.blackbird_i18n = ActiveSupport::OrderedOptions.new
   config.blackbird_i18n.locales = Blackbird::I18n::Locales.new

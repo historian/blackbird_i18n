@@ -17,12 +17,12 @@ module Blackbird::I18n::ActiveRecordExtensions
       end
     end
 
-    def define_attribute_methods(attr_names)
+    def define_attribute_methods
       return if attribute_methods_generated?
 
-      super(attr_names)
+      super
 
-      attr_names.each do |full_name|
+      columns_hash.keys.each do |full_name|
         next unless full_name =~ /^(.+)_t_([a-z]{2}(?:_[a-z]{2})?)$/
 
         attr_name, locale = $1, $2
