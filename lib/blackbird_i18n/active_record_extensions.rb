@@ -27,8 +27,8 @@ module Blackbird::I18n::ActiveRecordExtensions
 
         attr_name, locale = $1, $2
 
-        self.defined_attribute_locales[name] ||= []
-        self.defined_attribute_locales[name] << locale
+        self.defined_attribute_locales[attr_name] ||= []
+        self.defined_attribute_locales[attr_name] << locale
 
         attribute_method_matchers.each do |matcher|
           method_name = matcher.method_name(attr_name)
@@ -64,7 +64,16 @@ module Blackbird::I18n::ActiveRecordExtensions
           send(generate_method, attr_name)
         end
       end
-      @attribute_methods_generated = true
+
+    end
+
+    def define_method_i18n_attribute_before_type_cast(name)
+      generated_attribute_methods.module_eval(%{
+        def #{name}_before_type_cast(fallback=false)
+          locale = I18n.locale.to_s.gsub('-', '_').downcase
+          __send__("#{name}_t_\#{locale}_before_type_cast")
+        end
+      }, __FILE__, __LINE__)
     end
 
     def define_method_i18n_attribute(name)
