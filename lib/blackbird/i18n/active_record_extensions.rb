@@ -70,17 +70,9 @@ module Blackbird::I18n::ActiveRecordExtensions
     def define_method_i18n_attribute(name)
       generated_attribute_methods.module_eval(%{
         def #{name}(fallback=true)
-          if fallback
-            I18n.locales[I18n.locale].each do |locale|
-              locale = locale.gsub('-', '_').downcase
-              full_name = "#{name}_t_\#{locale}"
-              return __send__(full_name) if __send__("\#{full_name}?")
-            end
-            return nil
-          else
-            locale = I18n.locale.to_s.gsub('-', '_').downcase
-            __send__("#{name}_t_\#{locale}")
-          end
+          locale    = I18n.locale.to_s.gsub('-', '_').downcase
+          full_name = "#{name}_\#{(fallback ? 'f' : 't')}_\#{locale}"
+          __send__(full_name)
         end
       }, __FILE__, __LINE__)
     end
@@ -98,17 +90,9 @@ module Blackbird::I18n::ActiveRecordExtensions
     def define_method_i18n_attribute?(name)
       generated_attribute_methods.module_eval(%{
         def #{name}?(fallback=true)
-          if fallback
-            I18n.locales[I18n.locale].each do |locale|
-              locale = locale.gsub('-', '_').downcase
-              full_name = "#{name}_t_\#{locale}?"
-              return true if __send__(full_name)
-            end
-            return false
-          else
-            locale = I18n.locale.to_s.gsub('-', '_').downcase
-            __send__("#{name}_t_\#{locale}?")
-          end
+          locale    = I18n.locale.to_s.gsub('-', '_').downcase
+          full_name = "#{name}_\#{(fallback ? 'f' : 't')}_\#{locale}?"
+          __send__(full_name)
         end
       }, __FILE__, __LINE__)
     end
@@ -116,10 +100,11 @@ module Blackbird::I18n::ActiveRecordExtensions
     def define_method_all_i18n_attribute(name)
       generated_attribute_methods.module_eval(%{
         def #{name}_translations(fallback=true)
-          I18n.locales.inject({}) do |memo, locale|
-            l = locale.gsub('-', '_').downcase
-            full_name = "#{name}_t_\#{l}"
-            memo[locale] = __send__(full_name, fallback)
+          fallback = (fallback ? 'f' : 't')
+          I18n.available_locales.inject({}) do |memo, locale|
+            l            = locale.to_s.gsub('-', '_').downcase
+            full_name    = "#{name}_\#{fallback}_\#{l}"
+            memo[locale] = __send__(full_name)
             memo
           end
         end
@@ -130,10 +115,11 @@ module Blackbird::I18n::ActiveRecordExtensions
       generated_attribute_methods.module_eval(%{
         def #{name}_translations=(hash)
           hash.each do |locale, value|
-            l = locale.to_s.gsub('-', '_').downcase
+            l         = locale.to_s.gsub('-', '_').downcase
             full_name = "#{name}_t_\#{l}="
             __send__(full_name, value)
           end
+          hash
         end
       }, __FILE__, __LINE__)
     end
