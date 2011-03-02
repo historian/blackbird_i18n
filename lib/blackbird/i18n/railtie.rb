@@ -5,7 +5,7 @@ class Blackbird::I18n::Railtie < Rails::Engine
 end
 
 ActiveSupport.on_load(:active_record) do
-  ActiveRecord::Base.send(:include, Blackbird::I18n::ActiveRecordExtensions)
+  ActiveRecord::Base.extend Blackbird::I18n::ActiveRecordExtensions
 end
 
 ActiveSupport.on_load(:i18n) do

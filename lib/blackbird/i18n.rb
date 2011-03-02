@@ -10,6 +10,9 @@ module Blackbird::I18n
   require 'blackbird/i18n/version'
   require 'blackbird/i18n/active_record_extensions'
   require 'blackbird/i18n/processor'
-  require 'blackbird/i18n/railtie'
+
+  if defined? ::Rails::Railtie
+    require 'blackbird/i18n/railtie'
+  end
 
 end
