@@ -70,8 +70,9 @@ module Blackbird::I18n::ActiveRecordExtensions
     def define_method_i18n_attribute_before_type_cast(name)
       generated_attribute_methods.module_eval(%{
         def #{name}_before_type_cast(fallback=false)
-          locale = I18n.locale.to_s.gsub('-', '_').downcase
-          __send__("#{name}_t_\#{locale}_before_type_cast")
+          locale    = I18n.locale.to_s.gsub('-', '_').downcase
+          full_name = "#{name}_\#{(fallback ? 'f' : 't')}_\#{locale}"
+          __send__("\#{full_name}_before_type_cast")
         end
       }, __FILE__, __LINE__)
     end
